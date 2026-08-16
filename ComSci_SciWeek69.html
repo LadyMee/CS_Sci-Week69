@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComSci - พาเพลิน (ชิงเวลาโกยรางวัล)</title>
+    <!-- เรียกใช้ฟอนต์ Prompt จาก Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* พื้นหลังโทนน้ำเงินเข้ม มทร. */
+            background: linear-gradient(135deg, #001529, #003366, #004d99); 
+            margin: 0;
+            padding-top: 40px;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { 
+            margin: 0;
+            font-size: 48px;
+            color: #FFCC00; /* สีเหลืองทอง */
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            margin: 5px 0 0 0;
+            font-size: 18px;
+            font-weight: 400;
+            color: #99ccff; /* สีฟ้าอ่อน เพื่อให้อ่านง่ายบนพื้นน้ำเงิน */
+            letter-spacing: 1px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+
+        /* ลูกศรชี้ */
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 45px solid #FFCC00; /* ลูกศรสีเหลืองทอง */
+            z-index: 10;
+            filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.6));
+        }
+
+        /* ตัววงล้อ */
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            /* แบ่ง 5 ส่วน สลับเฉดสี น้ำเงิน-เหลือง */
+            background: conic-gradient(
+                #FF595E 0deg 72deg, 
+                #FFCA3A 72deg 144deg, 
+                #8AC926 144deg 216deg, 
+                #1982C4 216deg 288deg, 
+                #6A4C93 288deg 360deg
+            );
+            transition: transform 3.5s cubic-bezier(0.33, 1, 0.68, 1);
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #FFCC00; /* กรอบวงล้อสีเหลืองทอง */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            box-sizing: border-box;
+        }
+
+        /* ตัวเลขในวงล้อ */
+        .label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 30px;
+            margin-top: -15px;
+            transform-origin: 0 50%;
+            font-weight: 700;
+            font-size: 24px;
+            color: #ffffff;
+            /* เพิ่มขอบดำหนาขึ้นให้ตัวหนังสืออ่านง่ายทั้งบนสีเหลืองและสีน้ำเงิน */
+            text-shadow: 2px 2px 4px #000000, -1px -1px 2px #000000; 
+            text-align: right;
+            padding-right: 20px;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Prompt', sans-serif;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* ปุ่มหมุนวงล้อ */
+        .spin-btn {
+            color: #001529;
+            background-color: #FFCC00; /* เหลืองทอง */
+            border: 2px solid #FFCC00;
+        }
+        .spin-btn:hover { background-color: #ffdb4d; box-shadow: 0 4px 20px rgba(255, 204, 0, 0.5); }
+        .spin-btn:active { transform: scale(0.95); }
+        .spin-btn:disabled { background-color: #334d66; border-color: #334d66; color: #888; cursor: not-allowed; box-shadow: none; }
+
+        /* ปุ่มหยุดเวลา */
+        .stop-btn {
+            color: #FFCC00;
+            background-color: #d90429; /* น้ำเงิน */
+            border: 2px solid #FFCC00;
+        }
+        .stop-btn:hover:not(:disabled) { background-color: #004d99; box-shadow: 0 4px 20px rgba(0, 102, 204, 0.5); }
+        .stop-btn:active:not(:disabled) { transform: scale(0.95); }
+        .stop-btn:disabled { background-color: #1a334d; border-color: #1a334d; color: #555; cursor: not-allowed; box-shadow: none; }
+        
+        /* สเตตัสเมื่อกดหยุด (Pause) */
+        .stop-btn.paused {
+            background-color: #FFCC00; 
+            color: #003366; 
+            border: 2px solid #003366;
+        }
+
+        /* นาฬิกานับถอยหลัง */
+        .timer-box {
+            margin-top: 30px;
+            text-align: center;
+            background: rgba(0, 31, 63, 0.5); /* กล่องน้ำเงินโปร่งแสง */
+            backdrop-filter: blur(10px);
+            padding: 20px 50px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 204, 0, 0.3); /* ขอบกล่องสีเหลืองบางๆ */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+        
+        #timerDisplay {
+            font-size: 65px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #FFCC00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+            margin-bottom: 5px;
+            transition: color 0.3s;
+        }
+
+        #statusText {
+            margin: 0;
+            font-size: 16px;
+            color: #e6f2ff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>ComSci - พาเพลิน (ชิงเวลาโกยรางวัล)</h1>
+        <h2>วิทยาการคอมพิวเตอร์ มทร.ตะวันออก บางพระ</h2>
+    </div>
+
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel">
+            <div class="label" style="transform: rotate(-54deg);">1 นาที</div>
+            <div class="label" style="transform: rotate(18deg);">2 นาที</div>
+            <div class="label" style="transform: rotate(90deg);">3 นาที</div>
+            <div class="label" style="transform: rotate(162deg);">4 นาที</div>
+            <div class="label" style="transform: rotate(234deg);">5 นาที</div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button class="btn spin-btn" id="spinBtn" onclick="spin()">หมุนวงล้อ!</button>
+        <button class="btn stop-btn" id="stopBtn" onclick="toggleTimer()" disabled>หยุดเวลา</button>
+    </div>
+
+    <div class="timer-box">
+        <div id="timerDisplay">00:00</div>
+        <p id="statusText">กดปุ่ม "หมุนวงล้อ!" เพื่อเริ่มสุ่มเวลา</p>
+    </div>
+
+    <script>
+        let currentRotation = 0;
+        let timerInterval;
+        let timeRemaining = 0;
+        let isPaused = false;
+
+        function spin() {
+            const spinBtn = document.getElementById('spinBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            spinBtn.disabled = true;
+            stopBtn.disabled = true;
+            stopBtn.innerText = "หยุดเวลา";
+            stopBtn.classList.remove('paused');
+            isPaused = false;
+            
+            clearInterval(timerInterval);
+            document.getElementById('timerDisplay').innerText = "00:00";
+            document.getElementById('timerDisplay').style.color = "#FFCC00"; 
+            document.getElementById('statusText').innerText = "กำลังสุ่ม...";
+
+            const wheel = document.getElementById('wheel');
+            
+            const randomDeg = Math.floor(Math.random() * 360) + (360 * 5); 
+            currentRotation += randomDeg;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                const values = [1, 2, 3, 4, 5]; 
+                
+                const actualDeg = currentRotation % 360;
+                const originalAngleAtTop = (360 - actualDeg) % 360;
+                const winnerIndex = Math.floor(originalAngleAtTop / 72);
+                const winnerValue = values[winnerIndex];
+
+                document.getElementById('statusText').innerText = `คุณได้เวลา ${winnerValue} นาที! เวลากำลังเดิน...`;
+                spinBtn.disabled = false;
+                
+                startTimer(winnerValue);
+            }, 3500);
+        }
+
+        function startTimer(minutes) {
+            timeRemaining = minutes * 60;
+            updateTimerDisplay(timeRemaining);
+            
+            document.getElementById('stopBtn').disabled = false;
+            timerInterval = setInterval(timerTick, 1000);
+        }
+
+        function timerTick() {
+            timeRemaining--;
+            updateTimerDisplay(timeRemaining);
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('statusText').innerText = "⏰ หมดเวลาแล้ว!";
+                document.getElementById('timerDisplay').style.color = "#ff4d4d"; // แจ้งเตือนหมดเวลาด้วยสีแดง
+                document.getElementById('stopBtn').disabled = true;
+                alert("⏰ หมดเวลาที่กำหนดไว้แล้วครับ!");
+            }
+        }
+
+        function toggleTimer() {
+            const stopBtn = document.getElementById('stopBtn');
+            
+            if (timeRemaining <= 0) return; 
+
+            if (isPaused) {
+                isPaused = false;
+                stopBtn.innerText = "หยุดเวลา";
+                stopBtn.classList.remove('paused');
+                document.getElementById('statusText').innerText = "เวลากำลังเดิน...";
+                timerInterval = setInterval(timerTick, 1000);
+            } else {
+                isPaused = true;
+                stopBtn.innerText = "เล่นต่อ";
+                stopBtn.classList.add('paused');
+                document.getElementById('statusText').innerText = "หยุดเวลาชั่วคราว (Pause)";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function updateTimerDisplay(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+        }
+    </script>
+
+</body>
+</html>
