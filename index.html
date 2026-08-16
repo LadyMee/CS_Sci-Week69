@@ -12,7 +12,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* พื้นหลังโทนน้ำเงินเข้ม มทร. */
             background: linear-gradient(135deg, #001529, #003366, #004d99); 
             margin: 0;
             padding-top: 40px;
@@ -28,7 +27,7 @@
         h1 { 
             margin: 0;
             font-size: 48px;
-            color: #FFCC00; /* สีเหลืองทอง */
+            color: #FFCC00; 
             text-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
             letter-spacing: 2px;
         }
@@ -37,7 +36,7 @@
             margin: 5px 0 0 0;
             font-size: 18px;
             font-weight: 400;
-            color: #99ccff; /* สีฟ้าอ่อน เพื่อให้อ่านง่ายบนพื้นน้ำเงิน */
+            color: #99ccff; 
             letter-spacing: 1px;
         }
 
@@ -57,7 +56,7 @@
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-top: 45px solid #FFCC00; /* ลูกศรสีเหลืองทอง */
+            border-top: 45px solid #FFCC00; 
             z-index: 10;
             filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.6));
         }
@@ -67,7 +66,6 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* แบ่ง 5 ส่วน สลับเฉดสี น้ำเงิน-เหลือง */
             background: conic-gradient(
                 #FF595E 0deg 72deg, 
                 #FFCA3A 72deg 144deg, 
@@ -78,7 +76,7 @@
             transition: transform 3.5s cubic-bezier(0.33, 1, 0.68, 1);
             position: relative;
             overflow: hidden;
-            border: 8px solid #FFCC00; /* กรอบวงล้อสีเหลืองทอง */
+            border: 8px solid #FFCC00; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.6);
             box-sizing: border-box;
         }
@@ -95,7 +93,6 @@
             font-weight: 700;
             font-size: 24px;
             color: #ffffff;
-            /* เพิ่มขอบดำหนาขึ้นให้ตัวหนังสืออ่านง่ายทั้งบนสีเหลืองและสีน้ำเงิน */
             text-shadow: 2px 2px 4px #000000, -1px -1px 2px #000000; 
             text-align: right;
             padding-right: 20px;
@@ -119,42 +116,38 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        /* ปุ่มหมุนวงล้อ */
         .spin-btn {
             color: #001529;
-            background-color: #FFCC00; /* เหลืองทอง */
+            background-color: #FFCC00; 
             border: 2px solid #FFCC00;
         }
         .spin-btn:hover { background-color: #ffdb4d; box-shadow: 0 4px 20px rgba(255, 204, 0, 0.5); }
         .spin-btn:active { transform: scale(0.95); }
         .spin-btn:disabled { background-color: #334d66; border-color: #334d66; color: #888; cursor: not-allowed; box-shadow: none; }
 
-        /* ปุ่มหยุดเวลา */
         .stop-btn {
             color: #FFCC00;
-            background-color: #d90429; /* แดง */
+            background-color: #d90429; 
             border: 2px solid #FFCC00;
         }
         .stop-btn:hover:not(:disabled) { background-color: #004d99; box-shadow: 0 4px 20px rgba(0, 102, 204, 0.5); }
         .stop-btn:active:not(:disabled) { transform: scale(0.95); }
         .stop-btn:disabled { background-color: #1a334d; border-color: #1a334d; color: #555; cursor: not-allowed; box-shadow: none; }
         
-        /* สเตตัสเมื่อกดหยุด (Pause) */
         .stop-btn.paused {
             background-color: #FFCC00; 
             color: #003366; 
             border: 2px solid #003366;
         }
 
-        /* นาฬิกานับถอยหลัง */
         .timer-box {
             margin-top: 30px;
             text-align: center;
-            background: rgba(0, 31, 63, 0.5); /* กล่องน้ำเงินโปร่งแสง */
+            background: rgba(0, 31, 63, 0.5); 
             backdrop-filter: blur(10px);
             padding: 20px 50px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 204, 0, 0.3); /* ขอบกล่องสีเหลืองบางๆ */
+            border: 1px solid rgba(255, 204, 0, 0.3); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
         
@@ -177,8 +170,8 @@
 </head>
 <body>
 
-    <!-- ซ่อนแท็กเสียงเอาไว้ (ดึงเสียงแจ้งเตือนมาจาก Google) -->
-    <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+    <!-- เปลี่ยนมารับไฟล์ MP3 ที่อยู่ในเครื่องเราเอง (ต้องมีไฟล์ alarm.mp3 อยู่ในโฟลเดอร์เดียวกัน) -->
+    <audio id="alarmSound" src="alarm.mp3" preload="auto"></audio>
 
     <div class="header-container">
         <h1>ComSci - พาเพลิน (ชิงเวลาโกยรางวัล)</h1>
@@ -227,7 +220,6 @@
             document.getElementById('timerDisplay').style.color = "#FFCC00"; 
             document.getElementById('statusText').innerText = "กำลังสุ่ม...";
 
-            // รีเซ็ตและหยุดเสียงเดิมหากมีการกดหมุนใหม่
             const alarm = document.getElementById('alarmSound');
             if(alarm) {
                 alarm.pause();
@@ -270,16 +262,14 @@
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval);
                 document.getElementById('statusText').innerText = "⏰ หมดเวลา หมดเวลา ไปฝึกมาใหม่นะ";
-                document.getElementById('timerDisplay').style.color = "#ff4d4d"; // แจ้งเตือนหมดเวลาด้วยสีแดง
+                document.getElementById('timerDisplay').style.color = "#ff4d4d"; 
                 document.getElementById('stopBtn').disabled = true;
                 
-                // เล่นเสียงแจ้งเตือน
                 const alarm = document.getElementById('alarmSound');
                 if(alarm) {
-                    alarm.play().catch(e => console.log("เบราว์เซอร์บล็อกการเล่นเสียงอัตโนมัติ"));
+                    alarm.play().catch(e => console.log("เบราว์เซอร์บล็อกการเล่นเสียง หรือหาไฟล์ alarm.mp3 ไม่เจอ"));
                 }
 
-                // หน่วงเวลา Alert เล็กน้อย เพื่อให้เสียงเล่นก่อนและหน้าเว็บแสดงผลข้อความทัน
                 setTimeout(() => {
                     alert("⏰ หมดเวลา หมดเวลา ไปฝึกมาใหม่นะ");
                 }, 100);
