@@ -132,7 +132,7 @@
         /* ปุ่มหยุดเวลา */
         .stop-btn {
             color: #FFCC00;
-            background-color: #d90429; /* น้ำเงิน */
+            background-color: #d90429; /* แดง */
             border: 2px solid #FFCC00;
         }
         .stop-btn:hover:not(:disabled) { background-color: #004d99; box-shadow: 0 4px 20px rgba(0, 102, 204, 0.5); }
@@ -176,6 +176,9 @@
     </style>
 </head>
 <body>
+
+    <!-- ซ่อนแท็กเสียงเอาไว้ (ดึงเสียงแจ้งเตือนมาจาก Google) -->
+    <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 
     <div class="header-container">
         <h1>ComSci - พาเพลิน (ชิงเวลาโกยรางวัล)</h1>
@@ -224,6 +227,13 @@
             document.getElementById('timerDisplay').style.color = "#FFCC00"; 
             document.getElementById('statusText').innerText = "กำลังสุ่ม...";
 
+            // รีเซ็ตและหยุดเสียงเดิมหากมีการกดหมุนใหม่
+            const alarm = document.getElementById('alarmSound');
+            if(alarm) {
+                alarm.pause();
+                alarm.currentTime = 0;
+            }
+
             const wheel = document.getElementById('wheel');
             
             const randomDeg = Math.floor(Math.random() * 360) + (360 * 5); 
@@ -259,10 +269,20 @@
 
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval);
-                document.getElementById('statusText').innerText = "⏰ หมดเวลาแล้ว!";
+                document.getElementById('statusText').innerText = "⏰ หมดเวลา หมดเวลา ไปฝึกมาใหม่นะ";
                 document.getElementById('timerDisplay').style.color = "#ff4d4d"; // แจ้งเตือนหมดเวลาด้วยสีแดง
                 document.getElementById('stopBtn').disabled = true;
-                alert("⏰ หมดเวลาที่กำหนดไว้แล้วครับ!");
+                
+                // เล่นเสียงแจ้งเตือน
+                const alarm = document.getElementById('alarmSound');
+                if(alarm) {
+                    alarm.play().catch(e => console.log("เบราว์เซอร์บล็อกการเล่นเสียงอัตโนมัติ"));
+                }
+
+                // หน่วงเวลา Alert เล็กน้อย เพื่อให้เสียงเล่นก่อนและหน้าเว็บแสดงผลข้อความทัน
+                setTimeout(() => {
+                    alert("⏰ หมดเวลา หมดเวลา ไปฝึกมาใหม่นะ");
+                }, 100);
             }
         }
 
