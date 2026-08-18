@@ -170,7 +170,6 @@
 </head>
 <body>
 
-    <!-- เปลี่ยนมารับไฟล์ MP3 ที่อยู่ในเครื่องเราเอง (ต้องมีไฟล์ alarm.mp3 อยู่ในโฟลเดอร์เดียวกัน) -->
     <audio id="alarmSound" src="alarm.mp3" preload="auto"></audio>
 
     <div class="header-container">
@@ -181,11 +180,12 @@
     <div class="wheel-container">
         <div class="pointer"></div>
         <div class="wheel" id="wheel">
+            <!-- ปรับตัวเลขหน้าวงล้อ -->
             <div class="label" style="transform: rotate(-54deg);">1 นาที</div>
-            <div class="label" style="transform: rotate(18deg);">2 นาที</div>
-            <div class="label" style="transform: rotate(90deg);">3 นาที</div>
-            <div class="label" style="transform: rotate(162deg);">4 นาที</div>
-            <div class="label" style="transform: rotate(234deg);">5 นาที</div>
+            <div class="label" style="transform: rotate(18deg);">1.30 นาที</div>
+            <div class="label" style="transform: rotate(90deg);">2 นาที</div>
+            <div class="label" style="transform: rotate(162deg);">2.30 นาที</div>
+            <div class="label" style="transform: rotate(234deg);">3 นาที</div>
         </div>
     </div>
 
@@ -233,22 +233,26 @@
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
             setTimeout(() => {
-                const values = [1, 2, 3, 4, 5]; 
+                // ชุดข้อมูลข้อความที่โชว์ กับ จำนวนวินาทีที่แท้จริง
+                const timeLabels = ["1", "1.30", "2", "2.30", "3"]; 
+                const timeInSeconds = [60, 90, 120, 150, 180]; // แปลง 1.30 ให้เป็น 90 วินาที, 2.30 ให้เป็น 150 วินาทีอย่างถูกต้อง
                 
                 const actualDeg = currentRotation % 360;
                 const originalAngleAtTop = (360 - actualDeg) % 360;
                 const winnerIndex = Math.floor(originalAngleAtTop / 72);
-                const winnerValue = values[winnerIndex];
+                
+                const winnerLabel = timeLabels[winnerIndex];
+                const winnerSeconds = timeInSeconds[winnerIndex];
 
-                document.getElementById('statusText').innerText = `คุณได้เวลา ${winnerValue} นาที! เวลากำลังเดิน...`;
+                document.getElementById('statusText').innerText = `คุณได้เวลา ${winnerLabel} นาที! เวลากำลังเดิน...`;
                 spinBtn.disabled = false;
                 
-                startTimer(winnerValue);
+                startTimer(winnerSeconds);
             }, 3500);
         }
 
-        function startTimer(minutes) {
-            timeRemaining = minutes * 60;
+        function startTimer(seconds) {
+            timeRemaining = seconds; // รับค่ามาเป็นวินาทีโดยตรง
             updateTimerDisplay(timeRemaining);
             
             document.getElementById('stopBtn').disabled = false;
