@@ -61,17 +61,17 @@
             filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.6));
         }
 
-        /* ตัววงล้อ (ปรับองศาตามสัดส่วนเป๊ะๆ 39%, 39%, 10%, 7%, 5%) */
+        /* ตัววงล้อ (ปรับองศาตามสัดส่วนใหม่) */
         .wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             background: conic-gradient(
-                #FF595E 0deg 140.4deg,        /* 1 นาที (39%) */
-                #FFCA3A 140.4deg 280.8deg,    /* 1.30 นาที (39%) */
-                #8AC926 280.8deg 316.8deg,    /* 2 นาที (10%) */
-                #1982C4 316.8deg 342deg,      /* 2.30 นาที (7%) */
-                #6A4C93 342deg 360deg         /* 3 นาที (5%) */
+                #FF595E 0deg 126deg,        /* 30 วินาที (35%) */
+                #FFCA3A 126deg 252deg,      /* 1 นาที (35%) */
+                #8AC926 252deg 306deg,      /* 1.30 นาที (15%) */
+                #1982C4 306deg 342deg,      /* 2 นาที (10%) */
+                #6A4C93 342deg 360deg       /* 2.30 นาที (5%) */
             );
             transition: transform 3.5s cubic-bezier(0.33, 1, 0.68, 1);
             position: relative;
@@ -91,7 +91,7 @@
             margin-top: -15px;
             transform-origin: 0 50%;
             font-weight: 700;
-            font-size: 20px; /* ปรับเล็กลงนิดนึง เพื่อให้พอดีกับช่อง 5% */
+            font-size: 20px; 
             color: #ffffff;
             text-shadow: 2px 2px 4px #000000, -1px -1px 2px #000000; 
             text-align: right;
@@ -180,12 +180,12 @@
     <div class="wheel-container">
         <div class="pointer"></div>
         <div class="wheel" id="wheel">
-            <!-- หมุนข้อความให้เข้ากึ่งกลางของแต่ละช่วงองศาใหม่ -->
-            <div class="label" style="transform: rotate(-19.8deg);">1 นาที</div>
-            <div class="label" style="transform: rotate(120.6deg);">1.30 นาที</div>
-            <div class="label" style="transform: rotate(208.8deg);">2 นาที</div>
-            <div class="label" style="transform: rotate(239.4deg);">2.30 นาที</div>
-            <div class="label" style="transform: rotate(261deg);">3 นาที</div>
+            <!-- หมุนข้อความให้เข้ากึ่งกลางของแต่ละช่วงองศาใหม่ (หักลบ 90 องศาจากจุดกึ่งกลาง) -->
+            <div class="label" style="transform: rotate(-27deg);">30 วินาที</div>
+            <div class="label" style="transform: rotate(99deg);">1 นาที</div>
+            <div class="label" style="transform: rotate(189deg);">1.30 นาที</div>
+            <div class="label" style="transform: rotate(234deg);">2 นาที</div>
+            <div class="label" style="transform: rotate(261deg);">2.30 นาที</div>
         </div>
     </div>
 
@@ -233,31 +233,33 @@
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
             setTimeout(() => {
-                const timeLabels = ["1", "1.30", "2", "2.30", "3"]; 
-                const timeInSeconds = [60, 90, 120, 150, 180]; 
+                // ข้อความสำหรับแสดงผล และจำนวนวินาทีสำหรับการนับถอยหลัง
+                const timeText = ["30 วินาที", "1 นาที", "1.30 นาที", "2 นาที", "2.30 นาที"]; 
+                const timeInSeconds = [30, 60, 90, 120, 150]; 
                 
                 const actualDeg = currentRotation % 360;
                 // คำนวณองศาเมื่อเทียบกับลูกศร (0 องศาคือจุดบนสุด)
                 const originalAngleAtTop = (360 - actualDeg) % 360;
                 
                 let winnerIndex = 0;
-                // แบ่งโซนตามสัดส่วน % ที่ตั้งไว้
-                if (originalAngleAtTop >= 0 && originalAngleAtTop < 140.4) {
-                    winnerIndex = 0; // 1 นาที (39%)
-                } else if (originalAngleAtTop >= 140.4 && originalAngleAtTop < 280.8) {
-                    winnerIndex = 1; // 1.30 นาที (39%)
-                } else if (originalAngleAtTop >= 280.8 && originalAngleAtTop < 316.8) {
-                    winnerIndex = 2; // 2 นาที (10%)
-                } else if (originalAngleAtTop >= 316.8 && originalAngleAtTop < 342.0) {
-                    winnerIndex = 3; // 2.30 นาที (7%)
+                
+                // แบ่งโซนตามสัดส่วนองศา (35%, 35%, 15%, 10%, 5%)
+                if (originalAngleAtTop >= 0 && originalAngleAtTop < 126) {
+                    winnerIndex = 0; // 30 วินาที
+                } else if (originalAngleAtTop >= 126 && originalAngleAtTop < 252) {
+                    winnerIndex = 1; // 1 นาที
+                } else if (originalAngleAtTop >= 252 && originalAngleAtTop < 306) {
+                    winnerIndex = 2; // 1.30 นาที
+                } else if (originalAngleAtTop >= 306 && originalAngleAtTop < 342) {
+                    winnerIndex = 3; // 2 นาที
                 } else {
-                    winnerIndex = 4; // 3 นาที (5%)
+                    winnerIndex = 4; // 2.30 นาที
                 }
                 
-                const winnerLabel = timeLabels[winnerIndex];
+                const winnerLabel = timeText[winnerIndex];
                 const winnerSeconds = timeInSeconds[winnerIndex];
 
-                document.getElementById('statusText').innerText = `คุณได้เวลา ${winnerLabel} นาที! เวลากำลังเดิน...`;
+                document.getElementById('statusText').innerText = `คุณได้เวลา ${winnerLabel}! เวลากำลังเดิน...`;
                 spinBtn.disabled = false;
                 
                 startTimer(winnerSeconds);
