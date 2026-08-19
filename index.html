@@ -62,14 +62,14 @@
         }
 
         /* ตัววงล้อ (ปรับองศาตามสัดส่วนใหม่) */
-        .wheel {
+	.wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             background: conic-gradient(
                 #FF595E 0deg 126deg,        /* 30 วินาที (35%) */
-                #FFCA3A 126deg 252deg,      /* 1 นาที (35%) */
-                #8AC926 252deg 306deg,      /* 1.30 นาที (15%) */
+                #FFCA3A 126deg 234deg,      /* 1 นาที (30%) */
+                #8AC926 234deg 306deg,      /* 1.30 นาที (20%) */
                 #1982C4 306deg 342deg,      /* 2 นาที (10%) */
                 #6A4C93 342deg 360deg       /* 2.30 นาที (5%) */
             );
@@ -182,8 +182,8 @@
         <div class="wheel" id="wheel">
             <!-- หมุนข้อความให้เข้ากึ่งกลางของแต่ละช่วงองศาใหม่ (หักลบ 90 องศาจากจุดกึ่งกลาง) -->
             <div class="label" style="transform: rotate(-27deg);">30 วินาที</div>
-            <div class="label" style="transform: rotate(99deg);">1 นาที</div>
-            <div class="label" style="transform: rotate(189deg);">1.30 นาที</div>
+            <div class="label" style="transform: rotate(90deg);">1 นาที</div>
+            <div class="label" style="transform: rotate(180deg);">1.30 นาที</div>
             <div class="label" style="transform: rotate(234deg);">2 นาที</div>
             <div class="label" style="transform: rotate(261deg);">2.30 นาที</div>
         </div>
@@ -243,12 +243,12 @@
                 
                 let winnerIndex = 0;
                 
-                // แบ่งโซนตามสัดส่วนองศา (35%, 35%, 15%, 10%, 5%)
+                // แบ่งโซนตามสัดส่วนองศาใหม่
                 if (originalAngleAtTop >= 0 && originalAngleAtTop < 126) {
                     winnerIndex = 0; // 30 วินาที
-                } else if (originalAngleAtTop >= 126 && originalAngleAtTop < 252) {
+                } else if (originalAngleAtTop >= 126 && originalAngleAtTop < 234) {
                     winnerIndex = 1; // 1 นาที
-                } else if (originalAngleAtTop >= 252 && originalAngleAtTop < 306) {
+                } else if (originalAngleAtTop >= 234 && originalAngleAtTop < 306) {
                     winnerIndex = 2; // 1.30 นาที
                 } else if (originalAngleAtTop >= 306 && originalAngleAtTop < 342) {
                     winnerIndex = 3; // 2 นาที
